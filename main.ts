@@ -159,15 +159,22 @@ async function runBookingAgent() {
     messages.push(responseMessage);
 
     if (responseMessage.tool_calls) {
+        console.log('\nTools Called:');
         for (const call of responseMessage.tool_calls) {
             if (call.type !== 'function' || !call.function) {
                 continue;
             }
 
+            console.log(`\nCalling: ${call.function.name}`);
+            console.log(`Arguments:`, JSON.parse(call.function.arguments));
+
+
             const result = await executeTool(
                 call.function.name,
                 JSON.parse(call.function.arguments)
             );
+
+            console.log(`Result:`, result);
 
             messages.push({
                 role: "tool",
